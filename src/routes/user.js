@@ -2,8 +2,8 @@ const { Router } = require("express");
 const {signUp, signIn} = require("../controllers")
 const routes = Router();
 
-routes.get("/signin", signIn);
-routes.get("/signup", signUp);
+routes.post("/signin", signIn);
+routes.post("/signup", signUp);
 
 
 

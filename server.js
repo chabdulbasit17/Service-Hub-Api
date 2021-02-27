@@ -1,6 +1,13 @@
 const express = require("express");
 const routes = require("./src/routes");
+const CONFIG = require("./config/config");
+const bodyParser = require("body-parser");
+
+// Connect to Database
+require("./database")
+
 const app = express();
+
 
 /**
  * CORS 
@@ -20,7 +27,7 @@ const allowCrossDomain = function (req, res, next) {
 };
 
 app.use(allowCrossDomain);
-
+app.use(bodyParser.json());
 
 
 
@@ -28,13 +35,13 @@ app.use("/api/v1/", routes);
 
 
 
-app.listen(5000, (err) => {
+app.listen(CONFIG.PORT, (err) => {
     if (err) {
       console.error(err); // eslint-disable-line no-console
       return;
     }
-    console.log(`App is running on port 5000`); // eslint-disable-line no-console
-  });
+    console.log(`App is running on port ${CONFIG.PORT}`); // eslint-disable-line no-console
+});
   
-  module.exports = app;
+module.exports = app;
   
