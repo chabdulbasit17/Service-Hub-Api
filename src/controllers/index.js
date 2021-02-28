@@ -1,11 +1,12 @@
 
-const {signUp, signIn} = require("./userController");
+const {signUp, signIn, validateEmail} = require("./userController");
 
 
 
 module.exports= {
     signUp,
-    signIn
+    signIn,
+    validateEmail
 }
 
 
