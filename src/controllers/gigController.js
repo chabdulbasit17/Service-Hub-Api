@@ -1,5 +1,4 @@
 const { Gig } = require("../../database/models");
-const gig = require("../../database/models/gig");
 
 const addGig = async (req, res) => {
   const username = req.user.username;
@@ -75,10 +74,9 @@ const deleteGig = async (req, res) => {
 
 const showAllGigs = async (req, res) => {
   try {
-    const data = await Gig.find({});
     res.json({
       error: false,
-      data: data,
+      data: res.results,
     });
   } catch (err) {
     res.json({
@@ -91,10 +89,9 @@ const showAllGigs = async (req, res) => {
 const showUserGigs = async (req, res) => {
   const username = req.user.username;
   try {
-    const data = await Gig.find({ username });
     res.json({
       error: false,
-      data: data,
+      data: res.results,
     });
   } catch (err) {
     res.json({
