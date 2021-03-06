@@ -4,5 +4,5 @@ const routes = Router();
 
 routes.use("/user", require("./user"));
 routes.use("/gigs", require("./gig"));
-
+routes.use("/order", require("./orders"));
 module.exports = routes;

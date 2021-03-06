@@ -8,6 +8,12 @@ const {
   showUserGigs,
 } = require("./gigController");
 
+const {
+  createOrder,
+  cancelOrder,
+  getAllOrdersForUser,
+} = require("./orderController");
+
 module.exports = {
   signUp,
   signIn,
@@ -18,4 +24,7 @@ module.exports = {
   deleteGig,
   showAllGigs,
   showUserGigs,
+  createOrder,
+  cancelOrder,
+  getAllOrdersForUser,
 };
