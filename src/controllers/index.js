@@ -1,5 +1,5 @@
 const { signUp, signIn, validateEmail, logout } = require("./userController");
-
+const { getAllNotifications } = require("./notificationController");
 const {
   addGig,
   submitReview,
@@ -27,4 +27,5 @@ module.exports = {
   createOrder,
   cancelOrder,
   getAllOrdersForUser,
+  getAllNotifications,
 };

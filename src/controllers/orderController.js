@@ -1,11 +1,15 @@
-const { Order, Gig } = require("../../database/models");
+const { Order, Gig, Notification } = require("../../database/models");
 
 const createOrder = async (req, res) => {
   const userBuyer = req.user.username;
   const { gigID, dueDate } = req.body;
   try {
     const userSeller = await Gig.find({ _id: gigID }, "username").exec();
-
+    await Notification.create({
+      username: userSeller[0].username,
+      type: "new-order",
+      text: "You have received a new order.",
+    });
     await Order.create({
       buyer: userBuyer,
       seller: userSeller[0].username,
