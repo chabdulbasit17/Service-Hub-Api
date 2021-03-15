@@ -89,9 +89,10 @@ const showAllGigs = async (req, res) => {
 const showUserGigs = async (req, res) => {
   const username = req.user.username;
   try {
+    const data = await Gig.find({ username });
     res.json({
       error: false,
-      data: res.results,
+      data,
     });
   } catch (err) {
     res.json({

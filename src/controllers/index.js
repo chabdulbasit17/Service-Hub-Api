@@ -14,6 +14,13 @@ const {
   getAllOrdersForUser,
 } = require("./orderController");
 
+const {
+  AddPlace,
+  GetAllPlaces,
+  GetUserPlaces,
+  SubmitPlaceReview,
+} = require("./placeController");
+
 module.exports = {
   signUp,
   signIn,
@@ -24,6 +31,10 @@ module.exports = {
   deleteGig,
   showAllGigs,
   showUserGigs,
+  AddPlace,
+  GetAllPlaces,
+  GetUserPlaces,
+  SubmitPlaceReview,
   createOrder,
   cancelOrder,
   getAllOrdersForUser,
