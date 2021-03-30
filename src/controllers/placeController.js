@@ -1,20 +1,45 @@
-const Place = require("../../database/models");
+const Place = require("../../database/models/place.js");
 
 const AddPlace = async (req, res) => {
   try {
     const username = req.user.username;
-    const { category, desc, price } = req.body;
+    const {
+      country,
+      city,
+      address,
+      desc,
+      propertyType,
+      totalRooms,
+      guestPlaceType,
+      totalGuests,
+      totalBeds,
+      totalBathrooms,
+      basicAmenities,
+      safetyAmenities,
+      rent,
+    } = req.body;
     await Place.create({
       username,
-      category,
+      country,
+      city,
+      address,
       desc,
-      price,
+      propertyType,
+      totalRooms,
+      guestPlaceType,
+      totalGuests,
+      totalBeds,
+      totalBathrooms,
+      basicAmenities,
+      safetyAmenities,
+      rent,
     });
     res.json({
       error: false,
       message: "Place successfully put up for rent",
     });
   } catch (err) {
+    console.log(err);
     res.json({
       error: true,
       message: "An unexpected error occured. Please try again in a while",
