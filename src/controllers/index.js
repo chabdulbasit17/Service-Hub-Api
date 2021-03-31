@@ -22,6 +22,14 @@ const {
   DeletePlace,
 } = require("./placeController");
 
+const {
+  AddRide,
+  GetAllRides,
+  GetUserRides,
+  SubmitRideReview,
+  DeleteRide,
+} = require("./rideController");
+
 module.exports = {
   signUp,
   signIn,
@@ -37,6 +45,11 @@ module.exports = {
   GetUserPlaces,
   SubmitPlaceReview,
   DeletePlace,
+  AddRide,
+  GetAllRides,
+  GetUserRides,
+  SubmitRideReview,
+  DeleteRide,
   createOrder,
   cancelOrder,
   getAllOrdersForUser,
