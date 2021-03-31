@@ -77,6 +77,22 @@ const GetUserPlaces = async (req, res) => {
   }
 };
 
+const DeletePlace = async (req, res) => {
+  const { placeID } = req.body;
+  try {
+    await Place.deleteOne({ _id: placeID });
+    res.json({
+      error: false,
+      message: "Your place was deleted",
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while performing the operation",
+    });
+  }
+};
+
 const SubmitPlaceReview = async (req, res) => {
   const { placeID, review } = req.body;
   const username = req.user.username;
@@ -112,4 +128,5 @@ module.exports = {
   GetAllPlaces,
   GetUserPlaces,
   SubmitPlaceReview,
+  DeletePlace,
 };

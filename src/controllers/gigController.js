@@ -1,8 +1,8 @@
 const { Gig } = require("../../database/models");
+const user = require("../../database/models/user");
 
 const addGig = async (req, res) => {
   const username = req.user.username;
-  console.log(username);
   const { category, desc, price } = req.body;
   try {
     const gig = await Gig.create({
@@ -92,7 +92,7 @@ const showUserGigs = async (req, res) => {
     const data = await Gig.find({ username });
     res.json({
       error: false,
-      data,
+      data: data,
     });
   } catch (err) {
     res.json({

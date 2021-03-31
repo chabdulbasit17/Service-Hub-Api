@@ -19,6 +19,7 @@ const {
   GetAllPlaces,
   GetUserPlaces,
   SubmitPlaceReview,
+  DeletePlace,
 } = require("./placeController");
 
 module.exports = {
@@ -35,6 +36,7 @@ module.exports = {
   GetAllPlaces,
   GetUserPlaces,
   SubmitPlaceReview,
+  DeletePlace,
   createOrder,
   cancelOrder,
   getAllOrdersForUser,

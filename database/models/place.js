@@ -9,7 +9,7 @@ const userSchema = new Schema(
     address: { type: String, required: true },
     desc: { type: String, default: 0 },
     propertyType: { type: String, default: 0 },
-    totalRooms: { type: Number, default: 0 },
+    totalRooms: { type: String, default: 0 },
     guestPlaceType: { type: String, default: 0 },
     totalGuests: { type: Number, default: 0 },
     totalBeds: { type: Number, default: 0 },
