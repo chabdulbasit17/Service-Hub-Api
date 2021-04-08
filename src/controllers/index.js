@@ -1,4 +1,10 @@
-const { signUp, signIn, validateEmail, logout } = require("./userController");
+const {
+  signUp,
+  signIn,
+  validateEmail,
+  logout,
+  resetPassword,
+} = require("./userController");
 const { getAllNotifications } = require("./notificationController");
 const {
   addGig,
@@ -27,6 +33,7 @@ module.exports = {
   signIn,
   validateEmail,
   logout,
+  resetPassword,
   addGig,
   submitReview,
   deleteGig,

@@ -10,6 +10,10 @@ const userSchema = new Schema(
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     confirmed: { type: Boolean, default: false }, // Confirm propert will be changed to true after a user has confirmed his/her email through two factor auth
+    totalEarnings: { type: Number, default: 0 },
+    totalCompleteOrders: { type: Number, default: 0 },
+    totalBalance: { type: Number, default: 0 },
+    totalReimbursements: { type: Number, default: 0 },
   },
   {
     timestamps: true,

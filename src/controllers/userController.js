@@ -131,9 +131,47 @@ const logout = (req, res) => {
   });
 };
 
+const resetPassword = async (req, res) => {
+  let { oldpassword, newpassword } = req.body;
+  const username = req.user.username;
+  const authUser = await User.findOne({ username }).exec();
+  const pwdCmp = bcrypt.compare(
+    oldpassword,
+    authUser.password,
+    async function (err, result) {
+      if (err) {
+        res.json({
+          error: true,
+          message: "Your entered old password didn't match.",
+        });
+        return;
+      }
+      try {
+        const salt = await bcrypt.genSalt();
+        newpassword = await bcrypt.hash(newpassword, salt);
+      } catch (err) {
+        res.json({
+          error: true,
+          message: "An unexpected error occured.",
+        });
+        console.log(err);
+        return;
+      }
+      try {
+        await User.findOneAndUpdate({ username }, { password: newpassword });
+      } catch (err) {}
+      res.json({
+        error: false,
+        message: "Password successfully updated",
+      });
+    }
+  );
+};
+
 module.exports = {
   signUp,
   signIn,
   validateEmail,
   logout,
+  resetPassword,
 };
