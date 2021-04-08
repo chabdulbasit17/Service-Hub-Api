@@ -1,5 +1,4 @@
 const Place = require("../../database/models/place.js");
-
 const AddPlace = async (req, res) => {
   try {
     const username = req.user.username;
