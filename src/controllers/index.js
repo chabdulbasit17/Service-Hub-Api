@@ -18,6 +18,8 @@ const {
   createOrder,
   cancelOrder,
   getAllOrdersForUser,
+  submitOrder,
+  verifyOrder,
 } = require("./orderController");
 
 const {
@@ -60,5 +62,7 @@ module.exports = {
   createOrder,
   cancelOrder,
   getAllOrdersForUser,
+  submitOrder,
+  verifyOrder,
   getAllNotifications,
 };

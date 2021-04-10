@@ -1,20 +1,27 @@
-const Ride = require("../../database/models/ride");
-const user = require("../../database/models/user");
-
+const { Ride } = require("../../database/models");
+const { User } = require("../../database/models");
 
 const AddRide = async (req, res) => {
   const username = req.user.username;
-  const { source, destination, desc, pickupDate, pickupTime, passengers, fare } = req.body;
-	try {
+  const {
+    source,
+    destination,
+    desc,
+    pickupDate,
+    pickupTime,
+    passengers,
+    fare,
+  } = req.body;
+  try {
     const ride = await Ride.create({
       username,
       source,
       destination,
       desc,
-			pickupDate,
-			pickupTime,
-			passengers,
-			fare,
+      pickupDate,
+      pickupTime,
+      passengers,
+      fare,
     });
 
     res.json({
@@ -22,7 +29,7 @@ const AddRide = async (req, res) => {
       message: "Your ride has successfully been created",
     });
   } catch (err) {
-		console.log(err)
+    console.log(err);
     res.json({
       error: true,
       message:
@@ -108,7 +115,7 @@ const GetUserRides = async (req, res) => {
 };
 
 module.exports = {
-	AddRide,
+  AddRide,
   SubmitRideReview,
   DeleteRide,
   GetAllRides,
