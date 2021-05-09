@@ -107,6 +107,7 @@ const GetUserRides = async (req, res) => {
       data: data,
     });
   } catch (err) {
+    console.log(err);
     res.json({
       error: true,
       message: "An error occured while fetching data",
