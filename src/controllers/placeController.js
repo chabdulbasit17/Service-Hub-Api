@@ -122,10 +122,27 @@ const SubmitPlaceReview = async (req, res) => {
   }
 };
 
+const GetPlace = async (req, res) => {
+  const { placeID } = req.body;
+  try {
+    const placeData = await Place.findById(placeID)
+    res.json({
+      error: false,
+      placeData: placeData,
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while performing the operation",
+    });
+  }
+}
+
 module.exports = {
   AddPlace,
   GetAllPlaces,
   GetUserPlaces,
   SubmitPlaceReview,
   DeletePlace,
+  GetPlace,
 };

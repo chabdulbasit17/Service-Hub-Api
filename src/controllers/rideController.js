@@ -115,10 +115,37 @@ const GetUserRides = async (req, res) => {
   }
 };
 
+const GetRide = async (req, res) => {
+  const { rideID } = req.body;
+  try {
+    const rideData = await Ride.findById(rideID)
+    splitDate = rideData.pickupDate.toString().split(" ")
+    splitTime = rideData.pickupTime.toString().split(" ")
+    res.json({
+      error: false,
+      rideData: {
+        username: rideData.username,
+        source: rideData.source,
+        destination: rideData.destination,
+        passengers: rideData.passengers,
+        fare: rideData.fare,
+        pickupDate: splitDate[0] + " " + splitDate[1] + " " + splitDate[2] + " " + splitDate[3],
+        pickupTime: splitTime[4],
+      },
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while performing the operation",
+    });
+  }
+}
+
 module.exports = {
   AddRide,
   SubmitRideReview,
   DeleteRide,
   GetAllRides,
   GetUserRides,
+  GetRide,
 };

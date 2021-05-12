@@ -8,6 +8,7 @@ const {
   GetUserPlaces,
   SubmitPlaceReview,
   DeletePlace,
+  GetPlace,
 } = require("../controllers");
 const { isAuthenticated } = require("../../auth/jwttoken");
 const routes = Router();
@@ -17,5 +18,6 @@ routes.post("/all-places", isAuthenticated, paginatedResult(Place), GetAllPlaces
 routes.post("/user-places", isAuthenticated, GetUserPlaces);
 routes.post("/submit-review", isAuthenticated, SubmitPlaceReview);
 routes.post("/delete-place", isAuthenticated, DeletePlace);
+routes.post("/get-place", isAuthenticated, GetPlace);
 
 module.exports = routes;

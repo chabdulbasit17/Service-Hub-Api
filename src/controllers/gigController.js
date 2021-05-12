@@ -102,10 +102,27 @@ const showUserGigs = async (req, res) => {
   }
 };
 
+const getGig = async (req, res) => {
+  const { gigID } = req.body;
+  try {
+    const gigData = await Gig.findById(gigID)
+    res.json({
+      error: false,
+      gigData: gigData,
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while performing the operation",
+    });
+  }
+}
+
 module.exports = {
   addGig,
   submitReview,
   deleteGig,
   showAllGigs,
   showUserGigs,
+  getGig,
 };

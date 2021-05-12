@@ -9,6 +9,7 @@ const {
   deleteGig,
   showAllGigs,
   showUserGigs,
+  getGig,
 } = require("../controllers");
 const routes = Router();
 
@@ -27,4 +28,5 @@ routes.post(
   paginatedResult(Gig),
   showUserGigs
 );
+routes.post("/get-gig", isAuthenticated, getGig);
 module.exports = routes;

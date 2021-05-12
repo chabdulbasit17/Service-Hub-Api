@@ -8,6 +8,7 @@ const {
   GetUserRides,
   SubmitRideReview,
   DeleteRide,
+  GetRide,
 } = require("../controllers");
 const { isAuthenticated } = require("../../auth/jwttoken");
 const routes = Router();
@@ -17,5 +18,6 @@ routes.post("/all-rides", isAuthenticated, paginatedResult(Ride), GetAllRides);
 routes.post("/user-rides", isAuthenticated, GetUserRides);
 routes.post("/submit-review", isAuthenticated, SubmitRideReview);
 routes.post("/delete-ride", isAuthenticated, DeleteRide);
+routes.post("/get-ride", isAuthenticated, GetRide);
 
 module.exports = routes;

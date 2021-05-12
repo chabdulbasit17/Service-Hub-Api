@@ -12,6 +12,7 @@ const {
   deleteGig,
   showAllGigs,
   showUserGigs,
+  getGig,
 } = require("./gigController");
 
 const {
@@ -28,6 +29,7 @@ const {
   GetUserPlaces,
   SubmitPlaceReview,
   DeletePlace,
+  GetPlace,
 } = require("./placeController");
 
 const {
@@ -36,6 +38,7 @@ const {
   GetUserRides,
   SubmitRideReview,
   DeleteRide,
+  GetRide,
 } = require("./rideController");
 
 module.exports = {
@@ -49,16 +52,19 @@ module.exports = {
   deleteGig,
   showAllGigs,
   showUserGigs,
+  getGig,
   AddPlace,
   GetAllPlaces,
   GetUserPlaces,
   SubmitPlaceReview,
   DeletePlace,
+  GetPlace,
   AddRide,
   GetAllRides,
   GetUserRides,
   SubmitRideReview,
   DeleteRide,
+  GetRide,
   createOrder,
   cancelOrder,
   getAllOrdersForUser,
