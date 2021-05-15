@@ -16,6 +16,7 @@ const AddPlace = async (req, res) => {
       basicAmenities,
       safetyAmenities,
       rent,
+      Position,
     } = req.body;
     await Place.create({
       username,
@@ -32,6 +33,7 @@ const AddPlace = async (req, res) => {
       basicAmenities,
       safetyAmenities,
       rent,
+      Position,
     });
     res.json({
       error: false,
@@ -125,7 +127,7 @@ const SubmitPlaceReview = async (req, res) => {
 const GetPlace = async (req, res) => {
   const { placeID } = req.body;
   try {
-    const placeData = await Place.findById(placeID)
+    const placeData = await Place.findById(placeID);
     res.json({
       error: false,
       placeData: placeData,
@@ -136,7 +138,7 @@ const GetPlace = async (req, res) => {
       message: "An error occured while performing the operation",
     });
   }
-}
+};
 
 module.exports = {
   AddPlace,

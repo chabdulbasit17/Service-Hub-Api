@@ -17,6 +17,11 @@ const userSchema = new Schema(
     basicAmenities: { type: Array, default: [] },
     safetyAmenities: { type: Array, default: [] },
     rent: { type: Number, require: true },
+    Position: {
+      lat: { type: Number },
+      lng: { type: Number },
+      default: { lat: 0, lng: 0 },
+    },
     reviews: { type: Array, default: [] },
   },
   {
