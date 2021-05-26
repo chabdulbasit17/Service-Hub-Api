@@ -5,6 +5,8 @@ const {
   getAllOrdersForUser,
   submitOrder,
   verifyOrder,
+  bookRide,
+  completeRide,
 } = require("../controllers");
 const { isAuthenticated } = require("../../auth/jwttoken");
 const routes = Router();
@@ -14,4 +16,6 @@ routes.post("/cancel-order", isAuthenticated, cancelOrder);
 routes.post("/my-orders", isAuthenticated, getAllOrdersForUser);
 routes.post("/submit-order", isAuthenticated, submitOrder);
 routes.post("/verify-order", isAuthenticated, verifyOrder);
+routes.post("/book-ride", isAuthenticated, bookRide);
+routes.post("/complete-ride", isAuthenticated, completeRide);
 module.exports = routes;

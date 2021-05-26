@@ -4,6 +4,7 @@ const Order = require("./order");
 const Notification = require("./notification");
 const Place = require("./place");
 const Ride = require("./ride");
+const Booking = require("./booking");
 module.exports = {
   User,
   Gig,
@@ -11,4 +12,5 @@ module.exports = {
   Notification,
   Place,
   Ride,
+  Booking,
 };

@@ -22,6 +22,7 @@ const AddRide = async (req, res) => {
       pickupTime,
       passengers,
       fare,
+      status: "Not Taken",
     });
 
     res.json({
@@ -85,10 +86,12 @@ const DeleteRide = async (req, res) => {
 };
 
 const GetAllRides = async (req, res) => {
+  const name = req.user.username;
   try {
+    const data = await Ride.find({ username: {$ne: name} });
     res.json({
       error: false,
-      data: res.results,
+      data: data,
     });
   } catch (err) {
     res.json({
@@ -119,6 +122,7 @@ const GetRide = async (req, res) => {
   const { rideID } = req.body;
   try {
     const rideData = await Ride.findById(rideID)
+    const reviews = await User.find({ username: rideData.username }, {rideReviews: 1, _id: 0})
     splitDate = rideData.pickupDate.toString().split(" ")
     splitTime = rideData.pickupTime.toString().split(" ")
     res.json({
@@ -131,7 +135,9 @@ const GetRide = async (req, res) => {
         fare: rideData.fare,
         pickupDate: splitDate[0] + " " + splitDate[1] + " " + splitDate[2] + " " + splitDate[3],
         pickupTime: splitTime[4],
+        status: rideData.status,
       },
+      reviews: reviews,
     });
   } catch (err) {
     res.json({
@@ -141,6 +147,38 @@ const GetRide = async (req, res) => {
   }
 }
 
+const GetMyBookings = async (req, res) => {
+  const name = req.user.username;
+  try {
+    const data = await Ride.find({ buyer: name });
+    res.json({
+      error: false,
+      data: data,
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while fetching data",
+    });
+  }
+};
+
+const GetMyRides = async (req, res) => {
+  const name = req.user.username;
+  try {
+    const data = await Ride.find({ username: name, status: {$ne: "Not Taken"} });
+    res.json({
+      error: false,
+      data: data,
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while fetching data",
+    });
+  }
+};
+
 module.exports = {
   AddRide,
   SubmitRideReview,
@@ -148,4 +186,6 @@ module.exports = {
   GetAllRides,
   GetUserRides,
   GetRide,
+  GetMyBookings, 
+  GetMyRides,
 };

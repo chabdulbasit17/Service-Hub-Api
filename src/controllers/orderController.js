@@ -1,4 +1,4 @@
-const { Order, Gig, Notification } = require("../../database/models");
+const { Order, Gig, Notification, Ride, User } = require("../../database/models");
 
 const createOrder = async (req, res) => {
   const userBuyer = req.user.username;
@@ -29,6 +29,47 @@ const createOrder = async (req, res) => {
   }
 };
 
+const bookRide = async (req, res) => {
+  const username = req.user.username;
+  const { rideID } = req.body;
+  try {
+    await Ride.findOneAndUpdate({ _id: rideID }, { buyer: username, status: "Booked"});
+    res.json({
+      error: false,
+      message: "Your ride has been booked",
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      error: true,
+      message: "An unexpected error occured",
+    });
+  }
+}
+
+const completeRide = async (req, res) => {
+  const username = req.user.username;
+  const { name, review, rating, rideID } = req.body;
+  try {
+    await User.updateOne({ username: name }, { $push : { rideReviews: {
+      reviewer: username,
+      review: review,
+      rating: rating,
+    }}});
+    await Ride.findOneAndUpdate({ _id: rideID }, { status: "Completed"})
+    res.json({
+      error: false,
+      message: "Your ride has been completed",
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      error: true,
+      message: "An unexpected error occured",
+    });
+  }
+}
+
 const cancelOrder = async (req, res) => {
   const username = req.user.username;
   const { orderID } = req.body;
@@ -58,7 +99,7 @@ const cancelOrder = async (req, res) => {
 const getAllOrdersForUser = async (req, res) => {
   const username = req.user.username;
   try {
-    const data = await Order.find({ seller: username });
+    const data = await Order.find({ buyer: username });
     res.json({
       error: false,
       data,
@@ -132,4 +173,6 @@ module.exports = {
   getAllOrdersForUser,
   submitOrder,
   verifyOrder,
+  bookRide,
+  completeRide,
 };

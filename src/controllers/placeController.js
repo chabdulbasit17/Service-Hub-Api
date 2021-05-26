@@ -49,10 +49,12 @@ const AddPlace = async (req, res) => {
 };
 
 const GetAllPlaces = async (req, res) => {
+  const username = req.user.username;
   try {
+    const data = await Place.find({ username: {$ne: username} });
     res.json({
       error: false,
-      data: res.results,
+      data: data,
     });
   } catch (err) {
     res.json({

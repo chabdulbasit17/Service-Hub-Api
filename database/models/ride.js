@@ -11,6 +11,8 @@ const userSchema = new Schema(
     pickupTime: { type: Date, required: true },
     passengers: { type: Number, required: true },
     fare: { type: Number, required: true },
+    buyer: { type: String },
+    status: { type: String, required: true },
   },
   {
     timestamps: true,

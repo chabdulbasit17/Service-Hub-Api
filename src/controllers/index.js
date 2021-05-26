@@ -21,6 +21,8 @@ const {
   getAllOrdersForUser,
   submitOrder,
   verifyOrder,
+  bookRide,
+  completeRide,
 } = require("./orderController");
 
 const {
@@ -39,6 +41,8 @@ const {
   SubmitRideReview,
   DeleteRide,
   GetRide,
+  GetMyBookings,
+  GetMyRides,
 } = require("./rideController");
 
 module.exports = {
@@ -65,10 +69,14 @@ module.exports = {
   SubmitRideReview,
   DeleteRide,
   GetRide,
+  GetMyBookings,
+  GetMyRides,
   createOrder,
   cancelOrder,
   getAllOrdersForUser,
   submitOrder,
   verifyOrder,
+  bookRide,
+  completeRide,
   getAllNotifications,
 };

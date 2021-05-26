@@ -14,6 +14,7 @@ const userSchema = new Schema(
     totalCompleteOrders: { type: Number, default: 0 },
     totalBalance: { type: Number, default: 0 },
     totalReimbursements: { type: Number, default: 0 },
+    rideReviews: { type: Array }
   },
   {
     timestamps: true,
