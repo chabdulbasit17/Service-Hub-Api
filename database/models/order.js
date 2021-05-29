@@ -7,8 +7,7 @@ const userSchema = new Schema(
     seller: { type: String, required: true },
     gigID: { type: String, required: true },
     due: { type: Date, required: true },
-    completed: { type: Boolean, default: false },
-    isActive: { type: Boolean, default: true },
+    status: {type: String, required: true },
   },
   {
     timestamps: true,

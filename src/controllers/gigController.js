@@ -74,9 +74,11 @@ const deleteGig = async (req, res) => {
 
 const showAllGigs = async (req, res) => {
   try {
+    const name = req.user.username;
+    const data = await Gig.find({ username: {$ne: name} });
     res.json({
       error: false,
-      data: res.results,
+      data: data,
     });
   } catch (err) {
     res.json({

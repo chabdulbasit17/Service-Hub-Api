@@ -2,19 +2,19 @@ const { Order, Gig, Notification, Ride, Place, User, Booking } = require("../../
 
 const createOrder = async (req, res) => {
   const userBuyer = req.user.username;
-  const { gigID, dueDate } = req.body;
+  const { gigID, seller } = req.body;
   try {
-    const userSeller = await Gig.find({ _id: gigID }, "username").exec();
     await Notification.create({
-      username: userSeller[0].username,
+      username: seller,
       type: "new-order",
       text: "You have received a new order.",
     });
     await Order.create({
       buyer: userBuyer,
-      seller: userSeller[0].username,
-      gigID,
-      due: dueDate,
+      seller: seller,
+      gigID: gigID,
+      due: new Date(),
+      status: "Pending",
     });
     res.json({
       error: false,
@@ -122,6 +122,23 @@ const cancelOrder = async (req, res) => {
 const getAllOrdersForUser = async (req, res) => {
   const username = req.user.username;
   try {
+    const data = await Order.find({ seller: username });
+    res.json({
+      error: false,
+      data,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      error: true,
+      message: "An unexpected error occured while fetching data from server",
+    });
+  }
+};
+
+const getAllRequestsForUser = async (req, res) => {
+  const username = req.user.username;
+  try {
     const data = await Order.find({ buyer: username });
     res.json({
       error: false,
@@ -199,4 +216,5 @@ module.exports = {
   bookRide,
   completeRide,
   completeStay,
+  getAllRequestsForUser,
 };

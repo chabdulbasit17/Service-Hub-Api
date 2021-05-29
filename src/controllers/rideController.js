@@ -88,7 +88,7 @@ const DeleteRide = async (req, res) => {
 const GetAllRides = async (req, res) => {
   const name = req.user.username;
   try {
-    const data = await Ride.find({ username: {$ne: name} });
+    const data = await Ride.find({ username: {$ne: name}, status: "Not Taken" });
     res.json({
       error: false,
       data: data,
