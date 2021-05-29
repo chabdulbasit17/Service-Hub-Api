@@ -23,6 +23,7 @@ const {
   verifyOrder,
   bookRide,
   completeRide,
+  completeStay,
 } = require("./orderController");
 
 const {
@@ -32,6 +33,12 @@ const {
   SubmitPlaceReview,
   DeletePlace,
   GetPlace,
+  RequestPlace,
+  GetMyRequests,
+  GetMyPlaces,
+  ShowPlaceDescription,
+  CancelPlace,
+  BookPlace,
 } = require("./placeController");
 
 const {
@@ -63,6 +70,12 @@ module.exports = {
   SubmitPlaceReview,
   DeletePlace,
   GetPlace,
+  RequestPlace,
+  GetMyRequests,
+  GetMyPlaces,
+  CancelPlace,
+  BookPlace,
+  ShowPlaceDescription,
   AddRide,
   GetAllRides,
   GetUserRides,
@@ -78,5 +91,6 @@ module.exports = {
   verifyOrder,
   bookRide,
   completeRide,
+  completeStay,
   getAllNotifications,
 };

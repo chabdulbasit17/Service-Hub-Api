@@ -1,4 +1,4 @@
-const { Order, Gig, Notification, Ride, User } = require("../../database/models");
+const { Order, Gig, Notification, Ride, Place, User, Booking } = require("../../database/models");
 
 const createOrder = async (req, res) => {
   const userBuyer = req.user.username;
@@ -60,6 +60,29 @@ const completeRide = async (req, res) => {
     res.json({
       error: false,
       message: "Your ride has been completed",
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      error: true,
+      message: "An unexpected error occured",
+    });
+  }
+}
+
+const completeStay = async (req, res) => {
+  const username = req.user.username;
+  const { bookingID, review, rating, placeID } = req.body;
+  try {
+    await Place.updateOne({ _id: placeID }, { $push : { reviews: {
+      reviewer: username,
+      review: review,
+      rating: rating,
+    }}});
+    await Booking.findOneAndUpdate({ _id: bookingID }, { status: "Completed"})
+    res.json({
+      error: false,
+      message: "Your stay has been completed",
     });
   } catch (err) {
     console.log(err);
@@ -175,4 +198,5 @@ module.exports = {
   verifyOrder,
   bookRide,
   completeRide,
+  completeStay,
 };

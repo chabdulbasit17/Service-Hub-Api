@@ -23,6 +23,7 @@ const userSchema = new Schema(
       default: { lat: 0, lng: 0 },
     },
     reviews: { type: Array, default: [] },
+    bookingDates: { type: Array, default: []},
   },
   {
     timestamps: true,

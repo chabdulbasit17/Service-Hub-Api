@@ -3,12 +3,13 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema(
   {
-    buyer: { type: String, required: true },
-    seller: { type: String, required: true },
+    owner: { type: String, required: true },
+    rentee: { type: String, required: true },
     placeID: { type: String, required: true },
-    due: { type: Date, required: true },
-    completed: { type: Boolean, default: false },
-    isActive: { type: Boolean, default: true },
+    checkIn: { type: Date, required: true },
+    checkOut: { type: Date, required: true },
+    guests: { type: Number, required: true },
+    status: { type: String, required: true },
   },
   {
     timestamps: true,

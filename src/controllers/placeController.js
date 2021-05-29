@@ -1,4 +1,5 @@
 const { Place } = require("../../database/models");
+const { Booking } = require("../../database/models")
 const AddPlace = async (req, res) => {
   try {
     const username = req.user.username;
@@ -142,6 +143,162 @@ const GetPlace = async (req, res) => {
   }
 };
 
+const RequestPlace = async (req, res) => {
+  const username = req.user.username;
+  const { placeID, owner, checkIn, checkOut, guests } = req.body;
+  try {
+    const flag = await IsBookingAvailabe(placeID, checkIn, checkOut);
+    if(flag){
+    await Booking.create({
+      owner: owner,
+      rentee: username,
+      placeID: placeID,
+      checkIn: checkIn,
+      checkOut: checkOut,
+      guests: guests,
+      status: "Pending",
+    })
+    res.json({
+      error: false,
+      message: "Your request has been placed"
+    });
+  }
+  else{
+    res.json({
+      error: false,
+      message: "Place is not available in requested dates"
+    });
+  }
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while performing the operation",
+    });
+  }
+};
+
+const GetMyRequests = async (req, res) => {
+  const name = req.user.username;
+  try {
+    const data = await Booking.find({ rentee: name });
+    res.json({
+      error: false,
+      data: data,
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while fetching data",
+    });
+  }
+};
+
+const GetMyPlaces = async (req, res) => {
+  const name = req.user.username;
+  try {
+    const data = await Booking.find({ owner: name, status: {$ne: "Cancelled"} });
+    res.json({
+      error: false,
+      data: data,
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while fetching data",
+    });
+  }
+};
+
+const ShowPlaceDescription = async (req, res) => {
+  const { placeID } = req.body;
+  try {
+    const data = await Place.findById(placeID);
+    res.json({
+      error: false,
+      data: {
+        address: data.address,
+        city: data.city,
+        country: data.country,
+      }
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while fetching data",
+    });
+  }
+}; 
+
+const BookPlace = async (req, res) => {
+  const { placeID, bookingID, checkIn, checkOut } = req.body;
+  try {
+    const flag = await IsBookingAvailabe(placeID, checkIn, checkOut);
+    if(flag){
+      await Booking.findByIdAndUpdate({_id: bookingID}, {status: "Booked"})
+      await Place.updateOne({_id: placeID}, {
+        $push: {
+          bookingDates: {
+            checkIn: checkIn,
+            checkOut: checkOut,
+          }
+        }
+      })
+      res.json({
+        error: false,
+        message: "Your booking has been approved"
+      });
+    }
+    else{
+      console.log("ELSE")
+      await Booking.findByIdAndUpdate({_id: bookingID}, {status: "Cancelled"})
+      res.json({
+        error: false,
+        message: "Place is not available in requested dates. Cancelling Booking"
+      });
+    }
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while fetching data",
+    });
+  }
+}
+
+const CancelPlace = async (req, res) => {
+  const { bookingID } = req.body;
+  try {
+    await Booking.findByIdAndUpdate({_id: bookingID}, {status: "Cancelled"})
+    res.json({
+      error: false,
+      message: "Your booking has been cancelled",
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while fetching data",
+    });
+  }
+}
+
+const IsBookingAvailabe = async (placeID, checkIn, checkOut) => {
+  try {
+    const data = await Place.findById(placeID);
+    for(i = 0; i < data.bookingDates.length; i++){
+      if((checkIn < data.bookingDates[i]["checkIn"] && checkOut < data.bookingDates[i]["checkIn"]) || (checkIn > data.bookingDates[i]["checkOut"] && checkOut > data.bookingDates[i]["checkOut"])){
+        console.log("True")
+      }
+      else{
+        console.log("False")
+        return false
+      }
+    }
+    console.log("Check")
+    return true
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 module.exports = {
   AddPlace,
   GetAllPlaces,
@@ -149,4 +306,10 @@ module.exports = {
   SubmitPlaceReview,
   DeletePlace,
   GetPlace,
+  RequestPlace,
+  GetMyRequests,
+  GetMyPlaces,
+  ShowPlaceDescription,
+  CancelPlace,
+  BookPlace,
 };
