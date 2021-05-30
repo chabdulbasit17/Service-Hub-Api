@@ -13,3 +13,7 @@ const userSchema = new Schema(
 );
 
 module.exports = mongoose.model("Notification", userSchema);
+
+// {request} for a nee request
+// {approve} for approved
+// {reject} for a rejection

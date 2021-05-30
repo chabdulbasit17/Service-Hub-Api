@@ -1,4 +1,12 @@
-const { Order, Gig, Notification, Ride, Place, User, Booking } = require("../../database/models");
+const {
+  Order,
+  Gig,
+  Notification,
+  Ride,
+  Place,
+  User,
+  Booking,
+} = require("../../database/models");
 
 const createOrder = async (req, res) => {
   const userBuyer = req.user.username;
@@ -33,7 +41,10 @@ const bookRide = async (req, res) => {
   const username = req.user.username;
   const { rideID } = req.body;
   try {
-    await Ride.findOneAndUpdate({ _id: rideID }, { buyer: username, status: "Booked"});
+    await Ride.findOneAndUpdate(
+      { _id: rideID },
+      { buyer: username, status: "Booked" }
+    );
     res.json({
       error: false,
       message: "Your ride has been booked",
@@ -45,18 +56,25 @@ const bookRide = async (req, res) => {
       message: "An unexpected error occured",
     });
   }
-}
+};
 
 const completeRide = async (req, res) => {
   const username = req.user.username;
   const { name, review, rating, rideID } = req.body;
   try {
-    await User.updateOne({ username: name }, { $push : { rideReviews: {
-      reviewer: username,
-      review: review,
-      rating: rating,
-    }}});
-    await Ride.findOneAndUpdate({ _id: rideID }, { status: "Completed"})
+    await User.updateOne(
+      { username: name },
+      {
+        $push: {
+          rideReviews: {
+            reviewer: username,
+            review: review,
+            rating: rating,
+          },
+        },
+      }
+    );
+    await Ride.findOneAndUpdate({ _id: rideID }, { status: "Completed" });
     res.json({
       error: false,
       message: "Your ride has been completed",
@@ -68,21 +86,37 @@ const completeRide = async (req, res) => {
       message: "An unexpected error occured",
     });
   }
-}
+};
 
 const completeStay = async (req, res) => {
   const username = req.user.username;
   const { bookingID, review, rating, placeID } = req.body;
   try {
-    await Place.updateOne({ _id: placeID }, { $push : { reviews: {
-      reviewer: username,
-      review: review,
-      rating: rating,
-    }}});
-    await Booking.findOneAndUpdate({ _id: bookingID }, { status: "Completed"})
+    await Place.updateOne(
+      { _id: placeID },
+      {
+        $push: {
+          reviews: {
+            reviewer: username,
+            review: review,
+            rating: rating,
+          },
+        },
+      }
+    );
+    await Booking.findOneAndUpdate({ _id: bookingID }, { status: "Completed" });
     res.json({
       error: false,
       message: "Your stay has been completed",
+    });
+
+    const PLACE = await Place.findById({ _id: placeID });
+    const PlaceOwner = PLACE.username;
+
+    await Notification.create({
+      username: PlaceOwner,
+      type: "placecomplete",
+      text: `${username} have completed their stay and left a review`,
     });
   } catch (err) {
     console.log(err);
@@ -91,7 +125,7 @@ const completeStay = async (req, res) => {
       message: "An unexpected error occured",
     });
   }
-}
+};
 
 const cancelOrder = async (req, res) => {
   const username = req.user.username;

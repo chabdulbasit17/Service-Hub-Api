@@ -5,7 +5,10 @@ const {
   logout,
   resetPassword,
 } = require("./userController");
-const { getAllNotifications } = require("./notificationController");
+const {
+  getAllNotifications,
+  DeleteNotification,
+} = require("./notificationController");
 const {
   addGig,
   submitReview,
@@ -95,4 +98,5 @@ module.exports = {
   completeRide,
   completeStay,
   getAllNotifications,
+  DeleteNotification,
 };

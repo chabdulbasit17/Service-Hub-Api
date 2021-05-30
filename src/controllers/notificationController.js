@@ -8,6 +8,7 @@ const getAllNotifications = async (req, res) => {
       {},
       { sort: { created_at: -1 } }
     ).exec();
+
     res.json({
       error: false,
       data,
@@ -20,4 +21,15 @@ const getAllNotifications = async (req, res) => {
   }
 };
 
-module.exports = { getAllNotifications };
+const DeleteNotification = async (req, res) => {
+  const { id } = req.body;
+  try {
+    await Notification.deleteOne({ _id: id });
+    res.json({ error: false });
+  } catch (err) {
+    console.log(err);
+    res.json({ error: true });
+  }
+};
+
+module.exports = { getAllNotifications, DeleteNotification };
