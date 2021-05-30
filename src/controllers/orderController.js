@@ -39,12 +39,19 @@ const createOrder = async (req, res) => {
 
 const bookRide = async (req, res) => {
   const username = req.user.username;
-  const { rideID } = req.body;
+  const { rideID, owner } = req.body;
   try {
     await Ride.findOneAndUpdate(
       { _id: rideID },
       { buyer: username, status: "Booked" }
     );
+
+    await Notification.create({
+      username: owner,
+      type: "riderequest",
+      text: `${username} wants to share your ride with you !`,
+    });
+
     res.json({
       error: false,
       message: "Your ride has been booked",
@@ -78,6 +85,15 @@ const completeRide = async (req, res) => {
     res.json({
       error: false,
       message: "Your ride has been completed",
+    });
+
+    let rideDetails = await Ride.find({ _id: rideID });
+    let rideOwner = rideDetails[0].username;
+
+    await Notification.create({
+      username: rideOwner,
+      type: "ridecomplete",
+      text: `${username} left a review for your ride!`,
     });
   } catch (err) {
     console.log(err);
