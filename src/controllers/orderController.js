@@ -210,7 +210,10 @@ const getAllRequestsForUser = async (req, res) => {
 const submitOrder = async (req, res) => {
   const { driveLink, orderID } = req.body;
   try {
-    await Order.findOneAndUpdate({ _id: orderID }, { status: "Check", driveLink: driveLink });
+    await Order.findOneAndUpdate(
+      { _id: orderID },
+      { status: "Check", driveLink: driveLink }
+    );
     const data = await Order.findById({ _id: orderID });
     await Notification.create({
       username: data.buyer,
@@ -234,7 +237,7 @@ const submitOrder = async (req, res) => {
 const reviewOrder = async (req, res) => {
   const { orderID } = req.body;
   try {
-    await Order.findOneAndUpdate({ _id: orderID }, { status: "Review"});
+    await Order.findOneAndUpdate({ _id: orderID }, { status: "Review" });
     const data = await Order.findById({ _id: orderID });
     await Notification.create({
       username: data.seller,
@@ -243,8 +246,7 @@ const reviewOrder = async (req, res) => {
     });
     res.json({
       error: false,
-      message:
-        "There is a request for review of work",
+      message: "There is a request for review of work",
     });
   } catch (err) {
     console.log(err);
@@ -297,6 +299,16 @@ const bookOrder = async (req, res) => {
   const { orderID } = req.body;
   try {
     await Order.findOneAndUpdate({ _id: orderID }, { status: "Booked" });
+
+    const orderDetails = await Order.findById({ _id: orderID });
+    const buyer = orderDetails.buyer;
+    const seller = orderDetails.seller;
+
+    await Notification.create({
+      username: buyer,
+      type: "order-approve",
+      text: `${seller} have accepted your bid and started working on your order.`,
+    });
     res.json({
       error: false,
       message: "Your request has been approved",

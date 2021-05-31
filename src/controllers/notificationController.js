@@ -6,7 +6,7 @@ const getAllNotifications = async (req, res) => {
     const data = await Notification.find(
       { username },
       {},
-      { sort: { created_at: -1 } }
+      { sort: { _id: -1 } }
     ).exec();
 
     res.json({
