@@ -7,6 +7,7 @@ const userSchema = new Schema(
     seller: { type: String, required: true },
     gigID: { type: String, required: true },
     due: { type: Date, required: true },
+    driveLink: { type: String},
     status: {type: String, required: true },
   },
   {

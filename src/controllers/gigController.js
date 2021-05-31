@@ -120,6 +120,25 @@ const getGig = async (req, res) => {
   }
 }
 
+const showGigDescription = async (req, res) => {
+  const { gigID } = req.body;
+  try {
+    const data = await Gig.findById(gigID);
+    res.json({
+      error: false,
+      data: {
+        category: data.category,
+        description: data.desc,
+      },
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An error occured while fetching data",
+    });
+  }
+};
+
 module.exports = {
   addGig,
   submitReview,
@@ -127,4 +146,5 @@ module.exports = {
   showAllGigs,
   showUserGigs,
   getGig,
+  showGigDescription,
 };

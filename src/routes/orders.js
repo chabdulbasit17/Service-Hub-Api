@@ -9,6 +9,8 @@ const {
   bookRide,
   completeRide,
   completeStay,
+  bookOrder,
+  reviewOrder,
 } = require("../controllers");
 const { isAuthenticated } = require("../../auth/jwttoken");
 const routes = Router();
@@ -22,5 +24,7 @@ routes.post("/verify-order", isAuthenticated, verifyOrder);
 routes.post("/book-ride", isAuthenticated, bookRide);
 routes.post("/complete-ride", isAuthenticated, completeRide);
 routes.post("/complete-stay", isAuthenticated, completeStay);
+routes.post("/book-order", isAuthenticated, bookOrder);
+routes.post("/review-order", isAuthenticated, reviewOrder);
 
 module.exports = routes;

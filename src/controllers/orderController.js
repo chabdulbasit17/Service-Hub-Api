@@ -147,9 +147,9 @@ const cancelOrder = async (req, res) => {
   const username = req.user.username;
   const { orderID } = req.body;
   try {
-    const buyer = await Order.find({ _id: orderID }, "buyer");
-    if (buyer === username) {
-      await Order.findOneAndUpdate({ _id: orderID }, { isActive: false });
+    const seller = await Order.find({ _id: orderID }, "seller");
+    if (seller === username) {
+      await Order.findOneAndUpdate({ _id: orderID }, { status: "Cancelled" });
       res.json({
         error: false,
         message: "Your order has been cancelled",
@@ -210,13 +210,12 @@ const getAllRequestsForUser = async (req, res) => {
 const submitOrder = async (req, res) => {
   const { driveLink, orderID } = req.body;
   try {
-    await Order.findOneAndUpdate({ _id: orderID }, { completed: true });
-    const userBuyer = await Order.find({ _id: orderID }, "buyer").exec();
-    const userSeller = await Order.find({ _id: orderID }, "seller").exec();
+    await Order.findOneAndUpdate({ _id: orderID }, { status: "Check", driveLink: driveLink });
+    const data = await Order.findById({ _id: orderID });
     await Notification.create({
-      username: userBuyer,
+      username: data.buyer,
       type: "order-received",
-      text: `${userSeller} has delivered your order. Please check and verify`,
+      text: `${data.seller} has delivered your order. Please check and verify`,
     });
     res.json({
       error: false,
@@ -232,15 +231,52 @@ const submitOrder = async (req, res) => {
   }
 };
 
+const reviewOrder = async (req, res) => {
+  const { orderID } = req.body;
+  try {
+    await Order.findOneAndUpdate({ _id: orderID }, { status: "Review"});
+    const data = await Order.findById({ _id: orderID });
+    await Notification.create({
+      username: data.seller,
+      type: "order-received",
+      text: `${data.buyer} has requested to review the work`,
+    });
+    res.json({
+      error: false,
+      message:
+        "There is a request for review of work",
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      error: true,
+      message: "An unexpected error occured. Please try again",
+    });
+  }
+};
+
 // This will be called from the customer. When he sees the files for his order, he will
 // verify based on the correctness
 const verifyOrder = async (req, res) => {
-  const { orderID } = req.body;
+  const username = req.user.username;
+  const { orderID, gigID, review, rating } = req.body;
   try {
-    await Order.findOneAndUpdate({ _id: orderID }, { isActive: false });
-    const userSeller = await Order.find({ _id: orderID }, "seller").exec();
+    await Gig.updateOne(
+      { _id: gigID },
+      {
+        $push: {
+          reviews: {
+            reviewer: username,
+            review: review,
+            rating: rating,
+          },
+        },
+      }
+    );
+    await Order.findOneAndUpdate({ _id: orderID }, { status: "Completed" });
+    const data = await Order.findById({ _id: orderID });
     await Notification.create({
-      username: userSeller,
+      username: data.seller,
       type: "order-verified",
       text: "Congratulations! Your order submission was verified",
     });
@@ -257,14 +293,32 @@ const verifyOrder = async (req, res) => {
   }
 };
 
+const bookOrder = async (req, res) => {
+  const { orderID } = req.body;
+  try {
+    await Order.findOneAndUpdate({ _id: orderID }, { status: "Booked" });
+    res.json({
+      error: false,
+      message: "Your request has been approved",
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: "An unexpected error occured. Please try again",
+    });
+  }
+};
+
 module.exports = {
   createOrder,
   cancelOrder,
   getAllOrdersForUser,
   submitOrder,
+  reviewOrder,
   verifyOrder,
   bookRide,
   completeRide,
   completeStay,
+  bookOrder,
   getAllRequestsForUser,
 };

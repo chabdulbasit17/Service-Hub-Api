@@ -10,6 +10,7 @@ const {
   showAllGigs,
   showUserGigs,
   getGig,
+  showGigDescription,
 } = require("../controllers");
 const routes = Router();
 
@@ -29,4 +30,6 @@ routes.post(
   showUserGigs
 );
 routes.post("/get-gig", isAuthenticated, getGig);
+routes.post("/get-description", isAuthenticated, showGigDescription);
+
 module.exports = routes;

@@ -16,6 +16,7 @@ const {
   showAllGigs,
   showUserGigs,
   getGig,
+  showGigDescription,
 } = require("./gigController");
 
 const {
@@ -28,6 +29,8 @@ const {
   bookRide,
   completeRide,
   completeStay,
+  bookOrder,
+  reviewOrder,
 } = require("./orderController");
 
 const {
@@ -68,6 +71,7 @@ module.exports = {
   showAllGigs,
   showUserGigs,
   getGig,
+  showGigDescription,
   AddPlace,
   GetAllPlaces,
   GetUserPlaces,
@@ -90,6 +94,7 @@ module.exports = {
   GetMyRides,
   createOrder,
   cancelOrder,
+  reviewOrder,
   getAllOrdersForUser,
   getAllRequestsForUser,
   submitOrder,
@@ -97,6 +102,7 @@ module.exports = {
   bookRide,
   completeRide,
   completeStay,
+  bookOrder,
   getAllNotifications,
   DeleteNotification,
 };
