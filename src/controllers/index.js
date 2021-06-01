@@ -4,6 +4,7 @@ const {
   validateEmail,
   logout,
   resetPassword,
+  getBalance,
 } = require("./userController");
 const {
   getAllNotifications,
@@ -65,6 +66,7 @@ module.exports = {
   validateEmail,
   logout,
   resetPassword,
+  getBalance,
   addGig,
   submitReview,
   deleteGig,

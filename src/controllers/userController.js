@@ -168,10 +168,30 @@ const resetPassword = async (req, res) => {
   );
 };
 
+const getBalance = async (req, res) => {
+  try {
+    const username = req.user.username;
+    const data = await User.findOne({username: username});
+    res.json({
+      error: false,
+      balance: data.totalBalance,
+      earnings: data.totalEarnings,
+      spent: data.totalReimbursements,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      error: true,
+      message: "An error occured. This may be because the link has expired.",
+    });
+  }
+};
+
 module.exports = {
   signUp,
   signIn,
   validateEmail,
   logout,
+  getBalance,
   resetPassword,
 };

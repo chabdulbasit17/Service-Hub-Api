@@ -4,6 +4,7 @@ const {
   signIn,
   validateEmail,
   logout,
+  getBalance,
   resetPassword,
 } = require("../controllers");
 const { isAuthenticated } = require("../../auth/jwttoken");
@@ -14,5 +15,6 @@ routes.post("/signup", signUp);
 routes.get("/confirmation/:token", validateEmail);
 routes.post("/logout", isAuthenticated, logout);
 routes.post("/reset-password", isAuthenticated, resetPassword);
+routes.post("/get-balance", isAuthenticated, getBalance);
 
 module.exports = routes;
