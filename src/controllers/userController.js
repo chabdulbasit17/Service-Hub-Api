@@ -54,19 +54,11 @@ const signIn = async (req, res) => {
 
     console.log(authUser);
     // User has been returned. Now matching their passwords
+    const check = false;
     const pwdCompare = bcrypt.compare(
       password,
       authUser.password,
       function (err, result) {
-        if (err) {
-          // means passwords donot match
-          console.log(err);
-          res.json({
-            error: true,
-            message: "The entered password is wrong",
-          });
-          return;
-        }
         if (result) {
           if (authUser.confirmed) {
             // means user has validated their email. At this point its safe to send back a success response
@@ -77,7 +69,6 @@ const signIn = async (req, res) => {
               message: "Successfully Signed In",
               data: authUser,
             });
-            return;
           } else {
             // Means the user has not confirmed their email yet
             res.json({
@@ -86,6 +77,11 @@ const signIn = async (req, res) => {
             });
             return;
           }
+        } else {
+          res.json({
+            error: true,
+            message: "The entered password is wrong",
+          });
         }
       }
     );
@@ -171,7 +167,7 @@ const resetPassword = async (req, res) => {
 const getBalance = async (req, res) => {
   try {
     const username = req.user.username;
-    const data = await User.findOne({username: username});
+    const data = await User.findOne({ username: username });
     res.json({
       error: false,
       balance: data.totalBalance,
