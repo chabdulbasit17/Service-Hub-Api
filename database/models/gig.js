@@ -7,6 +7,7 @@ const userSchema = new Schema(
     category: { type: String, required: true },
     desc: { type: String, required: true },
     price: { type: Number, required: true },
+    duration: { type: Number, required: true },
     rating: { type: Number, default: 0 },
     sold: { type: Number, default: 0 },
     reviews: { type: Array, default: [] },

@@ -24,7 +24,7 @@ const createOrder = async (req, res) => {
         buyer: userBuyer,
         seller: seller,
         gigID: gigID,
-        due: new Date(),
+        due: new Date(new Date().getTime()+(gigData.duration*24*60*60*1000)),
         status: "Pending",
       });
       await User.findOneAndUpdate({username: userBuyer}, {totalBalance: userData.totalBalance - gigData.price})
@@ -139,8 +139,9 @@ const completeStay = async (req, res) => {
     const ownerData = await User.findOne({ username: bookingData.owner })
     const renteeData = await User.findOne({ username: bookingData.rentee })
     const placeData = await Place.findById(bookingData.placeID)
-    await User.findOneAndUpdate({username: bookingData.owner}, {totalBalance: ownerData.totalBalance + placeData.rent, totalEarnings: ownerData.totalEarnings + placeData.rent})
-    await User.findOneAndUpdate({username: bookingData.rentee}, {totalReimbursements: renteeData.totalReimbursements + placeData.rent})
+    //const days = Math.floor((new Date(bookingData.checkOut.split("T")[0]) - new Date(bookingData.checkIn.split("T")[0])) / (3600000*24))
+    await User.findOneAndUpdate({username: bookingData.owner}, {totalBalance: ownerData.totalBalance + (placeData.rent), totalEarnings: ownerData.totalEarnings + (placeData.rent)})
+    await User.findOneAndUpdate({username: bookingData.rentee}, {totalReimbursements: renteeData.totalReimbursements + (placeData.rent)})
     await Place.updateOne(
       { _id: placeID },
       {

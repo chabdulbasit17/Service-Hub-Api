@@ -149,9 +149,10 @@ const RequestPlace = async (req, res) => {
   const username = req.user.username;
   const { placeID, owner, checkIn, checkOut, guests } = req.body;
   try {
+    const days = Math.floor((new Date(checkOut.split("T")[0]) - new Date(checkIn.split("T")[0])) / (3600000*24))
     const userData = await User.findOne({ username: username })
     const placeData = await Place.findById(placeID)
-    if(userData.totalBalance - placeData.rent >= 0){
+    if(userData.totalBalance - (placeData.rent * days) >= 0){
       const flag = await IsBookingAvailabe(placeID, checkIn, checkOut);
     if (flag) {
       await Booking.create({
@@ -168,7 +169,7 @@ const RequestPlace = async (req, res) => {
         type: "placerequest",
         text: "You have a new request for your place.",
       });
-      await User.findOneAndUpdate({username: username}, {totalBalance: userData.totalBalance - placeData.rent})
+      await User.findOneAndUpdate({username: username}, {totalBalance: userData.totalBalance - (placeData.rent * days)})
       res.json({
         error: false,
         message: "Your request has been placed",
@@ -302,7 +303,8 @@ const CancelPlace = async (req, res) => {
     const bookingData = await Booking.findById(bookingID)
     const userData = await User.findOne({ username: bookingData.rentee })
     const placeData = await Place.findById(bookingData.placeID)
-    await User.findOneAndUpdate({username: rentee}, {totalBalance: userData.totalBalance + placeData.rent})
+    //const days = Math.floor((new Date(bookingData.checkOut.toString().split("T")[0]) - new Date(bookingData.checkIn.toString().split("T")[0])) / (3600000*24))
+    await User.findOneAndUpdate({username: rentee}, {totalBalance: userData.totalBalance + (placeData.rent)})
     await Booking.findByIdAndUpdate(
       { _id: bookingID },
       { status: "Cancelled" }

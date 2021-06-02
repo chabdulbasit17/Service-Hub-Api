@@ -3,13 +3,14 @@ const user = require("../../database/models/user");
 
 const addGig = async (req, res) => {
   const username = req.user.username;
-  const { category, desc, price } = req.body;
+  const { category, desc, price, duration } = req.body;
   try {
     const gig = await Gig.create({
       username,
       category,
       desc,
       price,
+      duration,
     });
 
     res.json({
