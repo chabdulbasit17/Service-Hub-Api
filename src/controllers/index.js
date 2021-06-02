@@ -5,6 +5,9 @@ const {
   logout,
   resetPassword,
   getBalance,
+  getUserData,
+  completeProfile,
+  getOtherUserData,
 } = require("./userController");
 const {
   getAllNotifications,
@@ -107,4 +110,7 @@ module.exports = {
   bookOrder,
   getAllNotifications,
   DeleteNotification,
+  getUserData,
+  completeProfile,
+  getOtherUserData,
 };

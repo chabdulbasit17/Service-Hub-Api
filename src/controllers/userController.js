@@ -183,6 +183,62 @@ const getBalance = async (req, res) => {
   }
 };
 
+const getUserData = async (req, res) => {
+  try {
+    const username = req.user.username;
+    const data = await User.find({ username });
+    res.json({
+      error: false,
+      data,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      error: true,
+      message: "An unexpected error occured",
+    });
+  }
+};
+
+const completeProfile = async (req, res) => {
+  try {
+    const username = req.user.username;
+    const { age, city, country, skills, about } = req.body;
+    await User.findOneAndUpdate(
+      { username },
+      { age, city, country, skills, about, completed: true }
+    );
+    res.json({
+      error: false,
+      message: "Your profile has been updated",
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      error: true,
+      message: "An unexpected error occured. Please try again",
+    });
+  }
+};
+
+const getOtherUserData = async (req, res) => {
+  try {
+    const username = req.body.username;
+    console.log(username.username);
+    const data = await User.find({ username });
+    res.json({
+      error: false,
+      data,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({
+      error: true,
+      message: "An unexpected error occured",
+    });
+  }
+};
+
 module.exports = {
   signUp,
   signIn,
@@ -190,4 +246,7 @@ module.exports = {
   logout,
   getBalance,
   resetPassword,
+  getUserData,
+  completeProfile,
+  getOtherUserData,
 };
