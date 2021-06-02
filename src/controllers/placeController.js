@@ -1,4 +1,4 @@
-const { Place } = require("../../database/models");
+const { Place, User } = require("../../database/models");
 const { Booking } = require("../../database/models");
 const { Notification } = require("../../database/models");
 
@@ -149,7 +149,10 @@ const RequestPlace = async (req, res) => {
   const username = req.user.username;
   const { placeID, owner, checkIn, checkOut, guests } = req.body;
   try {
-    const flag = await IsBookingAvailabe(placeID, checkIn, checkOut);
+    const userData = await User.findOne({ username: username })
+    const placeData = await Place.findById(placeID)
+    if(userData.totalBalance - placeData.rent >= 0){
+      const flag = await IsBookingAvailabe(placeID, checkIn, checkOut);
     if (flag) {
       await Booking.create({
         owner: owner,
@@ -165,6 +168,7 @@ const RequestPlace = async (req, res) => {
         type: "placerequest",
         text: "You have a new request for your place.",
       });
+      await User.findOneAndUpdate({username: username}, {totalBalance: userData.totalBalance - placeData.rent})
       res.json({
         error: false,
         message: "Your request has been placed",
@@ -173,6 +177,13 @@ const RequestPlace = async (req, res) => {
       res.json({
         error: false,
         message: "Place is not available in requested dates",
+      });
+    }
+    }
+    else{
+      res.json({
+        error: false,
+        message: "You don't have enough coins to buy this service",
       });
     }
   } catch (err) {
@@ -288,6 +299,10 @@ const BookPlace = async (req, res) => {
 const CancelPlace = async (req, res) => {
   const { bookingID, rentee } = req.body;
   try {
+    const bookingData = await Booking.findById(bookingID)
+    const userData = await User.findOne({ username: bookingData.rentee })
+    const placeData = await Place.findById(bookingData.placeID)
+    await User.findOneAndUpdate({username: rentee}, {totalBalance: userData.totalBalance + placeData.rent})
     await Booking.findByIdAndUpdate(
       { _id: bookingID },
       { status: "Cancelled" }
@@ -303,6 +318,7 @@ const CancelPlace = async (req, res) => {
       message: "Your booking has been cancelled",
     });
   } catch (err) {
+    console.log(err)
     res.json({
       error: true,
       message: "An error occured while fetching data",

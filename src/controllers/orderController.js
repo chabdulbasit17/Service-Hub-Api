@@ -12,22 +12,33 @@ const createOrder = async (req, res) => {
   const userBuyer = req.user.username;
   const { gigID, seller } = req.body;
   try {
-    await Notification.create({
-      username: seller,
-      type: "new-order",
-      text: "You have received a new order.",
-    });
-    await Order.create({
-      buyer: userBuyer,
-      seller: seller,
-      gigID: gigID,
-      due: new Date(),
-      status: "Pending",
-    });
-    res.json({
-      error: false,
-      message: "You have successfully placed this order",
-    });
+    const userData = await User.findOne({ username: userBuyer })
+    const gigData = await Gig.findById(gigID)
+    if(userData.totalBalance - gigData.price >= 0){
+      await Notification.create({
+        username: seller,
+        type: "new-order",
+        text: "You have received a new order.",
+      });
+      await Order.create({
+        buyer: userBuyer,
+        seller: seller,
+        gigID: gigID,
+        due: new Date(),
+        status: "Pending",
+      });
+      await User.findOneAndUpdate({username: userBuyer}, {totalBalance: userData.totalBalance - gigData.price})
+      res.json({
+        error: false,
+        message: "You have successfully placed this order",
+      });
+    }
+    else{
+      res.json({
+        error: false,
+        message: "You don't have enough coins to buy this service",
+      });
+    }
   } catch (err) {
     console.log(err);
     res.json({
@@ -41,21 +52,32 @@ const bookRide = async (req, res) => {
   const username = req.user.username;
   const { rideID, owner } = req.body;
   try {
-    await Ride.findOneAndUpdate(
-      { _id: rideID },
-      { buyer: username, status: "Booked" }
-    );
-
-    await Notification.create({
-      username: owner,
-      type: "riderequest",
-      text: `${username} wants to share your ride with you !`,
-    });
-
-    res.json({
-      error: false,
-      message: "Your ride has been booked",
-    });
+    console.log(rideID)
+    const userData = await User.findOne({ username: username })
+    const rideData = await Ride.findById(rideID)
+    if(userData.totalBalance - rideData.fare >= 0){
+      await Ride.findOneAndUpdate(
+        { _id: rideID },
+        { buyer: username, status: "Booked" }
+      );
+  
+      await Notification.create({
+        username: owner,
+        type: "riderequest",
+        text: `${username} wants to share your ride with you !`,
+      });
+      await User.findOneAndUpdate({username: username}, {totalBalance: userData.totalBalance - rideData.fare})
+      res.json({
+        error: false,
+        message: "Your ride has been booked",
+      });
+    }
+    else{
+      res.json({
+        error: false,
+        message: "You don't have enough coins to buy this service",
+      });
+    }
   } catch (err) {
     console.log(err);
     res.json({
@@ -69,6 +91,11 @@ const completeRide = async (req, res) => {
   const username = req.user.username;
   const { name, review, rating, rideID } = req.body;
   try {
+    const rideData = await Ride.findById(rideID)
+    const userData = await User.findOne({ username: rideData.username })
+    const buyerData = await User.findOne({ username: rideData.buyer })
+    await User.findOneAndUpdate({username: rideData.username}, {totalBalance: userData.totalBalance + rideData.fare, totalEarnings: userData.totalEarnings + rideData.fare})
+    await User.findOneAndUpdate({username: rideData.buyer}, {totalReimbursements: buyerData.totalReimbursements + rideData.fare})
     await User.updateOne(
       { username: name },
       {
@@ -108,6 +135,12 @@ const completeStay = async (req, res) => {
   const username = req.user.username;
   const { bookingID, review, rating, placeID } = req.body;
   try {
+    const bookingData = await Booking.findById(bookingID)
+    const ownerData = await User.findOne({ username: bookingData.owner })
+    const renteeData = await User.findOne({ username: bookingData.rentee })
+    const placeData = await Place.findById(bookingData.placeID)
+    await User.findOneAndUpdate({username: bookingData.owner}, {totalBalance: ownerData.totalBalance + placeData.rent, totalEarnings: ownerData.totalEarnings + placeData.rent})
+    await User.findOneAndUpdate({username: bookingData.rentee}, {totalReimbursements: renteeData.totalReimbursements + placeData.rent})
     await Place.updateOne(
       { _id: placeID },
       {
@@ -147,8 +180,11 @@ const cancelOrder = async (req, res) => {
   const username = req.user.username;
   const { orderID } = req.body;
   try {
-    const seller = await Order.find({ _id: orderID }, "seller");
-    if (seller === username) {
+    const seller = await Order.findById({ _id: orderID });
+    if (seller.seller === username) {
+      const userData = await User.findOne({ username: seller.buyer })
+      const gigData = await Gig.findById(seller.gigID)
+      await User.findOneAndUpdate({username: seller.buyer}, {totalBalance: userData.totalBalance + gigData.price})
       await Order.findOneAndUpdate({ _id: orderID }, { status: "Cancelled" });
       res.json({
         error: false,
@@ -263,6 +299,12 @@ const verifyOrder = async (req, res) => {
   const username = req.user.username;
   const { orderID, gigID, review, rating } = req.body;
   try {
+    const orderData = await Order.findById(orderID)
+    const sellerData = await User.findOne({ username: orderData.seller })
+    const buyerData = await User.findOne({ username: orderData.buyer })
+    const gigData = await Gig.findById(orderData.gigID)
+    await User.findOneAndUpdate({username: orderData.seller}, {totalBalance: sellerData.totalBalance + gigData.price, totalEarnings: sellerData.totalEarnings + gigData.price})
+    await User.findOneAndUpdate({username: orderData.buyer}, {totalReimbursements: buyerData.totalReimbursements + gigData.price})
     await Gig.updateOne(
       { _id: gigID },
       {

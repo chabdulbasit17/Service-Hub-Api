@@ -128,6 +128,7 @@ const GetRide = async (req, res) => {
     res.json({
       error: false,
       rideData: {
+        _id: rideData._id,
         username: rideData.username,
         source: rideData.source,
         destination: rideData.destination,
